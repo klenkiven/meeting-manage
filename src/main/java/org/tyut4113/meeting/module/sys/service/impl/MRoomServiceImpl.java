@@ -11,6 +11,7 @@ import org.tyut4113.meeting.module.sys.mapper.MRoomMapper;
 import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,5 +55,16 @@ public class MRoomServiceImpl extends ServiceImpl<MRoomMapper, MRoomEntity> impl
     @Override
     public void deleteBatch(Long[] roomIds) {
         this.removeByIds(Arrays.asList(roomIds));
+    }
+
+    @Override
+    public List<MRoomEntity> recommendRoomList(ArrayList<Integer> exceptRoomIdList, Integer peopleNum) {
+        QueryWrapper<MRoomEntity> query = new QueryWrapper<>();
+        for (Integer eRoomId: exceptRoomIdList) {
+            query.ne("id", eRoomId);
+        }
+        query.ge("capacity", peopleNum);
+
+        return baseMapper.selectList(query);
     }
 }

@@ -38,8 +38,14 @@ public class MRoomController {
      */
     @PostMapping("/recommend")
     @RequiresPermissions("meeting:room:recommend")
+    @SuppressWarnings("unchecked")
     public Result<List<MRoomEntity>> recommend(@RequestBody Map<String, Object> param) {
-        return Result.ok();
+        ArrayList<Integer> exceptRoomIdList = (ArrayList<Integer>) param.get("exceptRoomIdList");
+        Integer peopleNum = (Integer) param.get("peopleNum");
+
+        List<MRoomEntity> result = mRoomService.recommendRoomList(exceptRoomIdList, peopleNum);
+
+        return Result.ok(result);
     }
 
     /**
