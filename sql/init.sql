@@ -97,7 +97,7 @@ CREATE TABLE `m_meeting_info` (
                           `start_time` datetime COMMENT '开始时间',
                           `end_time` datetime COMMENT '结束时间',
                           `create_user_id` bigint COMMENT '会议发起者ID',
-                          `create_time` bigint COMMENT '会议请求发起时间',
+                          `create_time` datetime COMMENT '会议请求发起时间',
                           PRIMARY KEY (`id`)
 ) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='会议信息';
 
