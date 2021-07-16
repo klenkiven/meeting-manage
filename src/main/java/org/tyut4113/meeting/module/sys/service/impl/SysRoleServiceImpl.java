@@ -3,9 +3,13 @@ package org.tyut4113.meeting.module.sys.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.tyut4113.meeting.common.exception.GeneralException;
 import org.tyut4113.meeting.common.utils.Constant;
 import org.tyut4113.meeting.module.sys.entity.SysRoleEntity;
@@ -15,9 +19,8 @@ import org.tyut4113.meeting.module.sys.service.SysRoleService;
 import org.tyut4113.meeting.module.sys.service.SysUserRoleService;
 import org.tyut4113.meeting.module.sys.service.SysUserService;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 /**
  * 角色信息服务实现类
@@ -25,16 +28,18 @@ import java.util.List;
  * @date ：2021/7/14 17:33
  */
 @Service("sysRoleService")
-@Setter
-@RequiredArgsConstructor(onConstructor =@_(@Autowired))
-public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity> implements SysRoleService {
+@RequiredArgsConstructor
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity> implements SysRoleService, ApplicationContextAware {
 
     private final SysRoleMenuService sysRoleMenuService;
     private final SysUserRoleService sysUserRoleService;
-    /**
-     * 使用Set的注入方式，防止循环依赖的问题
-     */
+    private ApplicationContext applicationContext;
     private SysUserService sysUserService;
+
+    @PostConstruct
+    public void init() {
+        this.sysUserService = (SysUserService) applicationContext.getBean("sysUserService");
+    }
 
     @Override
     @Transactional(rollbackFor = {GeneralException.class, Exception.class})
@@ -76,7 +81,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity
 
     @Override
     public List<Long> listRoleIdByCreateUserId(Long createUserId) {
-        return sysUserRoleService.listRoleIdByUserId(createUserId);
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("create_user_id", createUserId);
+        List<SysRoleEntity> sysRoleEntities = baseMapper.selectByMap(condition);
+        List<Long> result = new ArrayList<>();
+        sysRoleEntities.forEach((item) -> {
+            result.add(item.getRoleId());
+        });
+        return result;
     }
 
     /**
@@ -96,5 +108,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity
         if(!menuIdList.containsAll(role.getMenuIdList())){
             throw new GeneralException("新增角色的权限，已超出你的权限范围");
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
