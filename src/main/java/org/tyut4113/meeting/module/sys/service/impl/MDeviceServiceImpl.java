@@ -24,12 +24,12 @@ public class MDeviceServiceImpl extends ServiceImpl<MDeviceMapper, MDeviceEntity
     public void saveDevice(MDeviceEntity device) {
         this.save(device);
 
+
     }
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public void updateDevice(MDeviceEntity device) {
         this.updateById(device);
-
     }
 
     @Override

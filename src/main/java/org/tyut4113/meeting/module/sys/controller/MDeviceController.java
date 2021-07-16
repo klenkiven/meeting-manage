@@ -11,7 +11,6 @@ import org.tyut4113.meeting.common.validation.ValidatorUtils;
 import org.tyut4113.meeting.common.validation.group.AddGroup;
 import org.tyut4113.meeting.common.validation.group.UpdateGroup;
 import org.tyut4113.meeting.module.sys.entity.MDeviceEntity;
-import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MDeviceService;
 
 import java.util.List;
@@ -32,11 +31,10 @@ public class MDeviceController {
     /**
      * 选择设备列表
      */
-    @GetMapping("/select")
+    @GetMapping("/select/{type}")
     @RequiresPermissions("meeting:device:select")
-    public Result<List<MDeviceEntity>> select(@PathVariable("deviceId") String deviceId) {
+    public Result<List<MDeviceEntity>> select(@PathVariable Integer type) {
 
-        MDeviceEntity result = mDeviceService.getById(deviceId);
         return Result.ok();
     }
 
@@ -47,7 +45,7 @@ public class MDeviceController {
     @RequiresPermissions("meeting:device:list")
     public Result<Page<MDeviceEntity>> list(@PathVariable Integer current,
                                             @PathVariable Integer limit,
-                                            @RequestBody Map<String, Object> params) {
+                                            @RequestParam Map<String, Object> params) {
         Page<MDeviceEntity> page = new Page<>(current, limit);
 
         String name = (String) params.get("name");
@@ -55,7 +53,7 @@ public class MDeviceController {
         query.like(!StringUtils.isBlank(name), "name", "%"+name+"%");
 
         Page<MDeviceEntity> result = mDeviceService.page(page, query);
-        return Result.ok();
+        return Result.ok(result);
     }
 
     /**
@@ -65,7 +63,7 @@ public class MDeviceController {
     @RequiresPermissions("meeting:device:info")
     public Result<MDeviceEntity> info(@PathVariable String deviceId) {
         MDeviceEntity result = mDeviceService.getById(deviceId);
-        return Result.ok();
+        return Result.ok(result);
     }
 
     /**
@@ -98,7 +96,7 @@ public class MDeviceController {
      */
     @PostMapping("delete")
     @RequiresPermissions("meeting:device:delete")
-    public Result<?> delete(Long[] deviceIds) {
+    public Result<?> delete(@RequestBody Long[] deviceIds) {
         mDeviceService.deleteBatch(deviceIds);
         return Result.ok();
     }
