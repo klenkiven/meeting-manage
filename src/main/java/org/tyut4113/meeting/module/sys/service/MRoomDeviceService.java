@@ -21,5 +21,12 @@ public interface MRoomDeviceService extends IService<MRoomDeviceEntity> {
      * @param deviceIdList 设备名称
      */
     void saveOrUpdate(Long roomId, List<Long> deviceIdList);
+
+    /**
+     * 根据会议室ID获取设备ID列表
+     * @param roomId 会议室ID
+     * @return 设备ID列表
+     */
+    List<Long> listDeviceIdByRoomId(long roomId);
 }
 

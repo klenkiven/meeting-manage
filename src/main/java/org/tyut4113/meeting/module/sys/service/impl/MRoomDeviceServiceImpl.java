@@ -7,6 +7,7 @@ import org.tyut4113.meeting.module.sys.entity.MRoomDeviceEntity;
 import org.tyut4113.meeting.module.sys.mapper.MRoomDeviceMapper;
 import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,5 +31,17 @@ public class MRoomDeviceServiceImpl extends ServiceImpl<MRoomDeviceMapper, MRoom
 
             this.save(rd);
         }
+    }
+
+    @Override
+    public List<Long> listDeviceIdByRoomId(long roomId) {
+        HashMap<String, Object> condition = new HashMap<>();
+        condition.put("room_id", roomId);
+        List<MRoomDeviceEntity> mRoomDeviceEntities = baseMapper.selectByMap(condition);
+        List<Long> result = new ArrayList<>();
+        mRoomDeviceEntities.forEach((item) -> {
+            result.add(item.getDeviceId());
+        });
+        return result;
     }
 }

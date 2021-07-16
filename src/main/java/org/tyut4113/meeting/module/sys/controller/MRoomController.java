@@ -15,6 +15,8 @@ import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,16 +34,25 @@ public class MRoomController {
     private final MRoomDeviceService mRoomDeviceService;
 
     /**
+     * 会议室推荐
+     */
+    @PostMapping("/recommend")
+    @RequiresPermissions("meeting:room:recommend")
+    public Result<List<MRoomEntity>> recommend(@RequestBody Map<String, Object> param) {
+        return Result.ok();
+    }
+
+    /**
      * 查询会议室详细信息
      */
     @GetMapping("/info/{roomId}")
     @RequiresPermissions("meeting:room:info")
     public Result<MRoomEntity> info(@PathVariable("roomId") String roomId) {
+        long rId = Long.parseLong(roomId);
+        MRoomEntity result = mRoomService.getById(rId);
 
-        MRoomEntity result = mRoomService.getById(roomId);
-
-        // TODO 注入设备列表
-        result.setDeviceIdList(new ArrayList<>());
+        List<Long> deviceIdList = mRoomDeviceService.listDeviceIdByRoomId(rId);
+        result.setDeviceIdList(deviceIdList);
 
         return Result.ok(result);
     }
