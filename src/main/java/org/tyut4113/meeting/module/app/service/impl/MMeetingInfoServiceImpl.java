@@ -77,7 +77,9 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
 
         // 基础时长：预约时间限制
         if (meetingEndMilli - meetingStartMilli > MAX_TIME) {
-            throw new GeneralException("预约时间过长：请预约2小时以内的时间");
+            throw new GeneralException("预约时间过长：请预约" + MAX_TIME / (60 * 60 * 1000) + "小时以内的时间");
+        } else if (meetingEndMilli - meetingStartMilli == 0) {
+            throw new GeneralException("预约时间过短：请预约0.5小时以上的时间");
         }
 
         // 基础情况：开始时间是不是晚于结束时间
