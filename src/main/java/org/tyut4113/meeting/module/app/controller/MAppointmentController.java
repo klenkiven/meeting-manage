@@ -6,6 +6,7 @@ import org.tyut4113.meeting.common.utils.Result;
 import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public class MAppointmentController extends AbstractController {
      */
     @PostMapping("/except")
     public Result<List<Long>> except(@RequestBody Map<String, Object> params) {
+
+        mMeetingInfoService.listAllCollusionMeeting(new Date(), new Date());
 
         return Result.ok();
     }
