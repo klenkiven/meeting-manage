@@ -35,4 +35,36 @@ public final class Constant {
         }
     }
 
+    public enum DeviceStatus {
+        /**
+         * 占用
+         */
+        UNAVAILABLE(0),
+
+        /**
+         * 可用
+         */
+        AVAILABLE(1),
+
+        /**
+         * 未分配
+         */
+        UNALLOCATED(2),
+
+        /**
+         * 已分配
+         */
+        ALLOCATED(3);
+
+        private final int value;
+
+        DeviceStatus(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
 }
