@@ -7,9 +7,13 @@ import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.tyut4113.meeting.common.exception.GeneralException;
 import org.tyut4113.meeting.common.utils.Constant;
 import org.tyut4113.meeting.module.sys.entity.SysUserEntity;
@@ -18,6 +22,7 @@ import org.tyut4113.meeting.module.sys.service.SysRoleService;
 import org.tyut4113.meeting.module.sys.service.SysUserRoleService;
 import org.tyut4113.meeting.module.sys.service.SysUserService;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,14 +34,17 @@ import java.util.List;
  */
 @Service("sysUserService")
 @Setter
-@RequiredArgsConstructor(onConstructor =@_(@Autowired))
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity> implements SysUserService  {
+@RequiredArgsConstructor
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity> implements SysUserService, ApplicationContextAware {
 
     private final SysUserRoleService sysUserRoleService;
-    /**
-     * 使用Set的注入方式，防止循环依赖的问题
-     */
+    private ApplicationContext applicationContext;
     private SysRoleService sysRoleService;
+
+    @PostConstruct
+    public void init() {
+        this.sysRoleService = (SysRoleService) applicationContext.getBean("sysRoleService");
+    }
 
     @Override
     public List<Long> listAllMenuId(Long userId) {
@@ -131,5 +139,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         if(!roles.containsAll(user.getRoleIdList())){
             throw new GeneralException("新增用户所选角色，不是本人创建");
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
