@@ -48,6 +48,7 @@ public class SysUserController extends AbstractController {
         SysUserEntity user = new SysUserEntity();
         user.setUserId(getUserId());
         user.setUsername(getUser().getUsername());
+        user.setUid(getUser().getUid());
         return Result.ok(user);
     }
 
@@ -85,6 +86,10 @@ public class SysUserController extends AbstractController {
         List<JSONObject> result = new ArrayList<>();
         for(SysUserEntity user: sysUserEntities) {
             JSONObject item = new JSONObject();
+            // 参与会的人员选择上不包含自己
+            if (getUserId().equals(user.getUserId())) {
+                continue;
+            }
             item.put("name", user.getName());
             item.put("uid", user.getUid());
 
