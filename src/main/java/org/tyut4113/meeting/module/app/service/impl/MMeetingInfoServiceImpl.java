@@ -11,6 +11,7 @@ import org.tyut4113.meeting.module.app.mapper.MMeetingInfoMapper;
 import org.tyut4113.meeting.module.app.service.MMeetingDeviceService;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 import org.tyut4113.meeting.module.app.service.MUserMeetingService;
+import org.tyut4113.meeting.module.sys.service.MRoomService;
 
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -25,6 +26,10 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
 
     public final static int MAX_TIME = 10 * 60 * 60 * 1000;
 
+    /** 系统级别模块 */
+    private final MRoomService mRoomService;
+
+    /** 普通业务级别模块 */
     private final MMeetingDeviceService mMeetingDeviceService;
     private final MUserMeetingService mUserMeetingService;
 
@@ -93,6 +98,10 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
             throw new GeneralException("开始时间早于当前时间");
         }
 
+        // 会议室此时是否被禁用？
+        if (mRoomService.getById(meetingInfo.getRoomId()).getStatus() == 0) {
+            throw new GeneralException("会议室已经被禁用");
+        }
 
         // 时间碰撞情况一：上一个的结束时间，晚于当前的开始时间
         // 时间碰撞情况二：下一个的开始时间，早于当前的结束时间

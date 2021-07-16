@@ -60,10 +60,14 @@ public class MRoomServiceImpl extends ServiceImpl<MRoomMapper, MRoomEntity> impl
     @Override
     public List<MRoomEntity> recommendRoomList(ArrayList<Integer> exceptRoomIdList, Integer peopleNum) {
         QueryWrapper<MRoomEntity> query = new QueryWrapper<>();
+
+        // 被禁用的会议室无法被选中
+        query.ne("status", 0);
         for (Integer eRoomId: exceptRoomIdList) {
             query.ne("id", eRoomId);
         }
         query.ge("capacity", peopleNum);
+        query.orderByAsc(true, "capacity");
 
         return baseMapper.selectList(query);
     }
