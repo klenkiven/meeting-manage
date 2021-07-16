@@ -36,12 +36,13 @@ public class MAppointmentController extends AbstractController {
     }
 
     /**
-     * 获取时段内可用的会议室
+     * 获取时段内碰撞的会议室
      */
     @PostMapping("/except")
-    public Result<List<Long>> except(@RequestBody Map<String, Object> params) {
-
-        mMeetingInfoService.listAllCollusionMeeting(new Date(), new Date());
+    public Result<List<Long>> except(@RequestBody Map<String, Date> params) {
+        Date startTime = params.get("startTime");
+        Date endTime = params.get("endTime");
+        mMeetingInfoService.listAllCollusionMeeting(startTime, endTime);
 
         return Result.ok();
     }
