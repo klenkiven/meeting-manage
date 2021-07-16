@@ -6,15 +6,16 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
+import org.tyut4113.meeting.common.utils.Constant;
 import org.tyut4113.meeting.common.utils.Result;
 import org.tyut4113.meeting.common.validation.ValidatorUtils;
 import org.tyut4113.meeting.common.validation.group.AddGroup;
 import org.tyut4113.meeting.common.validation.group.UpdateGroup;
 import org.tyut4113.meeting.module.sys.entity.MDeviceEntity;
+import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MDeviceService;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 设备管理 Controller
@@ -34,8 +35,15 @@ public class MDeviceController {
     @GetMapping("/select/{type}")
     @RequiresPermissions("meeting:device:select")
     public Result<List<MDeviceEntity>> select(@PathVariable Integer type) {
+        QueryWrapper<MDeviceEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", type);
+        if (type == 0) {
+            queryWrapper.eq("status", Constant.DeviceStatus.UNALLOCATED.getValue());
+        }
 
-        return Result.ok();
+        List<MDeviceEntity> result = mDeviceService.list(queryWrapper);
+
+        return Result.ok(result);
     }
 
     /**
