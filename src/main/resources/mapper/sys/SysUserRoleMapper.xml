@@ -16,4 +16,16 @@
         select role_id from sys_user_role where user_id = #{userId}
     </select>
 
+    <select id="listUserIdByRoleName" resultType="long">
+        select user_id
+        from sys_user_role sur
+        where
+              exists(
+                  select *
+                  from sys_role sr
+                  where sur.role_id = sr.role_id and
+                        sr.role_name = #{roleName}
+                  )
+    </select>
+
 </mapper>
