@@ -63,4 +63,14 @@ public class MMeetingInfoEntity implements Serializable {
 	@TableField(exist = false)
 	private List<Long> deviceList;
 
+	/**
+	 * 会议发起者ID
+	 */
+	private Long createUserId;
+
+	/**
+	 * 会议创建时间
+	 */
+	private Date createTime;
+
 }

@@ -13,5 +13,10 @@ import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
  */
 public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
 
+    /**
+     * 保存会议信息及其相关关系
+     * @param meetingInfo 会议信息
+     */
+    void saveMeetingInfo(MMeetingInfoEntity meetingInfo);
 }
 

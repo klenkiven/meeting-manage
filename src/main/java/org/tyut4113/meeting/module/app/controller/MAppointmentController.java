@@ -1,9 +1,10 @@
 package org.tyut4113.meeting.module.app.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.tyut4113.meeting.common.utils.Result;
 import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
+import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 
 import java.util.List;
 import java.util.Map;
@@ -15,14 +16,20 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/m/meeting/appointment")
-@AllArgsConstructor
-public class MAppointmentController {
+@RequiredArgsConstructor
+public class MAppointmentController extends AbstractController {
+
+    private final MMeetingInfoService mMeetingInfoService;
 
     /**
      * 保存会议预约信息
+     *
+     * 注意：会议发起者必须是会议的成员之一
      */
     @PostMapping("/save")
     public Result<?> save(@RequestBody MMeetingInfoEntity meetingInfo) {
+        meetingInfo.setCreateUserId(getUserId());
+        mMeetingInfoService.saveMeetingInfo(meetingInfo);
 
         return Result.ok();
     }
