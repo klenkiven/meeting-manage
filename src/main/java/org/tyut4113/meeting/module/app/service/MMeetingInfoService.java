@@ -25,6 +25,12 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
     void saveMeetingInfo(MMeetingInfoEntity meetingInfo);
 
     /**
+     * 更新会议信息及其相关关系
+     * @param meetingInfo 会议信息
+     */
+    void updateMeetingInfo(MMeetingInfoEntity meetingInfo);
+
+    /**
      * 获取所有时间碰撞的会议
      *
      * @param meetingEndTime 会议开始时间

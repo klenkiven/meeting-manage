@@ -48,4 +48,14 @@ public class MMeetingController {
         return Result.ok(result);
     }
 
+    /**
+     * 会议信息更新
+     */
+    @PostMapping("/update")
+    public Result<?> update(@RequestBody MMeetingInfoEntity meetingInfo) {
+        mMeetingInfoService.updateMeetingInfo(meetingInfo);
+
+        return Result.ok();
+    }
+
 }

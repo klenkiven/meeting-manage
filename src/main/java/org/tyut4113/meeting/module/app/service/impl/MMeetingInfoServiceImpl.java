@@ -18,8 +18,6 @@ import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
 import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
-import java.lang.reflect.InvocationTargetException;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,9 +42,26 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
     public void saveMeetingInfo(MMeetingInfoEntity meetingInfo) {
         // 验证会议的数据完整性
         checkValidity(meetingInfo);
+        // 时间碰撞情况
+        List<Long> roomIdList = listAllCollusionMeeting(meetingInfo.getStartTime(), meetingInfo.getEndTime());
+        if (roomIdList != null && roomIdList.contains(meetingInfo.getRoomId())) {
+            throw new GeneralException("此会议室会议时间冲突");
+        }
 
         meetingInfo.setCreateTime(new Date());
         this.save(meetingInfo);
+
+        List<Long> deviceList = meetingInfo.getDeviceList();
+        List<Long> uidList = meetingInfo.getUidList();
+
+        mMeetingDeviceService.saveOrUpdate(meetingInfo.getId(), deviceList);
+        mUserMeetingService.saveOrUpdate(meetingInfo.getId(), uidList);
+    }
+
+    @Override
+    public void updateMeetingInfo(MMeetingInfoEntity meetingInfo) {
+
+        this.updateById(meetingInfo);
 
         List<Long> deviceList = meetingInfo.getDeviceList();
         List<Long> uidList = meetingInfo.getUidList();
@@ -62,13 +77,24 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
         long meetingEndMilli = meetingEndTime.getTime();
 
         QueryWrapper<MMeetingInfoEntity> queryWrapper = new QueryWrapper<>();
-        // 时间碰撞情况一：上一个的结束时间，晚于当前的开始时间
+        List<MMeetingInfoEntity> meetingInfoList = new ArrayList<>();
+        // 时间碰撞情况一：结束时间在预约时间之内
+        queryWrapper.clear();
         queryWrapper.ge("end_time", new Date(meetingStartMilli));
-        // 逻辑连接
-        queryWrapper.or();
-        // 时间碰撞情况二：下一个的开始时间，早于当前的结束时间
+        queryWrapper.le("end_time", new Date(meetingEndMilli));
+        meetingInfoList.addAll(baseMapper.selectList(queryWrapper));
+
+        // 时间碰撞情况二：开始时间在预约时间之内
+        queryWrapper.clear();
+        queryWrapper.ge("start_time", new Date(meetingStartMilli));
         queryWrapper.le("start_time", new Date(meetingEndMilli));
-        List<MMeetingInfoEntity> meetingInfoList = baseMapper.selectList(queryWrapper);
+        meetingInfoList.addAll(baseMapper.selectList(queryWrapper));
+
+        // 时间碰撞情况三：预约时间在另一个预约时间之内
+        queryWrapper.clear();
+        queryWrapper.ge("start_time", new Date(meetingStartMilli));
+        queryWrapper.le("end_time", new Date(meetingStartMilli));
+        meetingInfoList.addAll(baseMapper.selectList(queryWrapper));
 
         List<Long> roomIdList = new ArrayList<>();
         meetingInfoList.forEach((item) -> {
@@ -137,20 +163,13 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
 
         // 基础情况：开始时间早于今天
         // 这里获得的系统时间是毫秒，因此需要除以1000
-        if (meetingStartMilli < System.currentTimeMillis()/1000) {
+        if (meetingStartMilli < System.currentTimeMillis()) {
             throw new GeneralException("开始时间早于当前时间");
         }
 
         // 会议室此时是否被禁用？
         if (mRoomService.getById(meetingInfo.getRoomId()).getStatus() == 0) {
             throw new GeneralException("会议室已经被禁用");
-        }
-
-        // 时间碰撞情况一：上一个的结束时间，晚于当前的开始时间
-        // 时间碰撞情况二：下一个的开始时间，早于当前的结束时间
-        List<Long> roomIdList = listAllCollusionMeeting(meetingInfo.getStartTime(), meetingInfo.getEndTime());
-        if (roomIdList != null && roomIdList.contains(meetingInfo.getRoomId())) {
-            throw new GeneralException("此会议室会议时间冲突");
         }
     }
 }
