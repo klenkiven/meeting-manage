@@ -109,7 +109,7 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
     public Page<MMeetingInfoVo> page(Integer current, Integer limit, String name) {
         Page<MMeetingInfoEntity> page = new Page<>(current, limit);
         QueryWrapper<MMeetingInfoEntity> query = new QueryWrapper<>();
-        query.like(StringUtils.isBlank(name), "name", "%" + name + "%");
+        query.like(!StringUtils.isBlank(name), "name", "%" + name + "%");
         Page<MMeetingInfoEntity> meetingInfoEntityPage = this.page(page, query);
 
         List<MMeetingInfoVo> mMeetingInfoVoRecords = new ArrayList<>();
