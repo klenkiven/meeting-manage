@@ -37,8 +37,9 @@ public class MDeviceController {
     @GetMapping("/select/{type}")
     @RequiresPermissions("meeting:device:select")
     public Result<List<MDeviceEntity>> select(@PathVariable Integer type,
-                                              @RequestParam("roomId") Long roomId) {
+                                              @RequestParam Map<String, Object> param) {
         QueryWrapper<MDeviceEntity> queryWrapper = new QueryWrapper<>();
+        Long roomId = param.get("roomId") != null? Long.parseLong((String) param.get("roomId")): null;
         queryWrapper.eq("type", type);
         if (type == 0) {
             if (roomId != null) {
