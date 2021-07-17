@@ -45,9 +45,10 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
      * @param current 当前页
      * @param limit 页限制
      * @param name 模糊名
+     * @param userId 创建者ID
      * @return 数据传输页
      */
-    Page<MMeetingInfoVo> page(Integer current, Integer limit, String name);
+    Page<MMeetingInfoVo> page(Integer current, Integer limit, String name, Long userId);
 
     /**
      * 根据会议ID获取会议的详细信息
@@ -62,5 +63,13 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
      * @param meetingIds 会议ID列表
      */
     void deleteBatch(Long[] meetingIds);
+
+    /**
+     * 列出所有员工所参与的会议
+     *
+     * @param uid 员工工号
+     * @return 会议信息
+     */
+    List<MMeetingInfoVo> listAllParticipatedMeeting(Long uid);
 }
 

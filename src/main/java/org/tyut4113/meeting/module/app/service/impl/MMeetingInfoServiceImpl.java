@@ -9,7 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tyut4113.meeting.common.exception.GeneralException;
+import org.tyut4113.meeting.common.utils.Constant;
 import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
+import org.tyut4113.meeting.module.app.entity.MUserMeetingEntity;
 import org.tyut4113.meeting.module.app.mapper.MMeetingInfoMapper;
 import org.tyut4113.meeting.module.app.service.MMeetingDeviceService;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
@@ -18,10 +20,7 @@ import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
 import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Service("mMeetingInfoService")
@@ -106,12 +105,16 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
     }
 
     @Override
-    public Page<MMeetingInfoVo> page(Integer current, Integer limit, String name) {
+    public Page<MMeetingInfoVo> page(Integer current, Integer limit, String name, Long userId) {
         Page<MMeetingInfoEntity> page = new Page<>(current, limit);
         QueryWrapper<MMeetingInfoEntity> query = new QueryWrapper<>();
+        if (userId != Constant.ADMIN) {
+            query.eq("create_user_id", userId);
+        }
         query.like(!StringUtils.isBlank(name), "name", "%" + name + "%");
         Page<MMeetingInfoEntity> meetingInfoEntityPage = this.page(page, query);
 
+        // 处理返回列表
         List<MMeetingInfoVo> mMeetingInfoVoRecords = new ArrayList<>();
         for(MMeetingInfoEntity mm: meetingInfoEntityPage.getRecords()) {
             MMeetingInfoVo mmv = new MMeetingInfoVo();
@@ -148,6 +151,33 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
 
         mUserMeetingService.deleteBatch(meetingIds);
         mMeetingDeviceService.deleteBatch(meetingIds);
+    }
+
+    @Override
+    public List<MMeetingInfoVo> listAllParticipatedMeeting(Long uid) {
+        // 找出所有的关系
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("uid", uid);
+        List<MUserMeetingEntity> mUserMeetingEntities = mUserMeetingService.listByMap(condition);
+
+        Set<Long> meetingIdSet = new HashSet<>();
+        mUserMeetingEntities.forEach((item) -> {
+            meetingIdSet.add(item.getMeetingId());
+        });
+
+        List<MMeetingInfoVo> result = new ArrayList<>();
+        for (Long meetingId: meetingIdSet) {
+            MMeetingInfoVo mmv = new MMeetingInfoVo();
+            MMeetingInfoEntity mm = this.getById(meetingId);
+            BeanUtils.copyProperties(mm, mmv);
+
+            MRoomEntity room = mRoomService.getById(mm.getRoomId());
+            mmv.setRoomName(room.getName());
+
+            result.add(mmv);
+        }
+
+        return result;
     }
 
     /**

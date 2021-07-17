@@ -8,6 +8,7 @@ import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/m/meeting")
 @AllArgsConstructor
-public class MMeetingController {
+public class MMeetingController extends AbstractController {
 
     private final MMeetingInfoService mMeetingInfoService;
 
@@ -29,10 +30,21 @@ public class MMeetingController {
     @GetMapping("/list/create/{current}/{limit}")
     public Result<Page<MMeetingInfoVo>> listCreate(@PathVariable Integer current,
                                                    @PathVariable Integer limit,
-                                                   @RequestParam Map<String, String> param) {
+                                                   @RequestParam("name") String name,
+                                                   @RequestParam("userId") Long userId) {
 
-        String name = param.get("name");
-        Page<MMeetingInfoVo> result = mMeetingInfoService.page(current, limit, name);
+        Page<MMeetingInfoVo> result = mMeetingInfoService.page(current, limit, name, userId);
+
+        return Result.ok(result);
+    }
+
+    /**
+     * 参与会议者的会议列表
+     */
+    @GetMapping("/list/participate")
+    public Result<List<MMeetingInfoVo>> listParticipate(@RequestParam("uid") Long uid) {
+
+        List<MMeetingInfoVo> result = mMeetingInfoService.listAllParticipatedMeeting(uid);
 
         return Result.ok(result);
     }
