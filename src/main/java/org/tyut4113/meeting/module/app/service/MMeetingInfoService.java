@@ -42,5 +42,13 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
      * @return 数据传输页
      */
     Page<MMeetingInfoVo> page(Integer current, Integer limit, String name);
+
+    /**
+     * 根据会议ID获取会议的详细信息
+     *
+     * @param meetingId 会议ID
+     * @return 会议详细信息
+     */
+    MMeetingInfoEntity getMeetingByMeetingId(Long meetingId);
 }
 

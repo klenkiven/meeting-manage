@@ -34,4 +34,9 @@ public class MUserMeetingServiceImpl extends ServiceImpl<MUserMeetingMapper, MUs
             baseMapper.insert(mUserMeetingEntity);
         }
     }
+
+    @Override
+    public List<Long> listUidByMeetingId(Long meetingId) {
+        return baseMapper.listUidByMeetingId(meetingId);
+    }
 }

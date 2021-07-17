@@ -103,6 +103,18 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
         return result;
     }
 
+    @Override
+    public MMeetingInfoEntity getMeetingByMeetingId(Long meetingId) {
+        MMeetingInfoEntity result = this.getById(meetingId);
+
+        List<Long> uidList = mUserMeetingService.listUidByMeetingId(meetingId);
+        List<Long> deviceIdList = mMeetingDeviceService.listDeviceIdByMeetingId(meetingId);
+        result.setUidList(uidList);
+        result.setDeviceList(deviceIdList);
+
+        return result;
+    }
+
     /**
      * 校验数据的完整性
      * @param meetingInfo 会议数据

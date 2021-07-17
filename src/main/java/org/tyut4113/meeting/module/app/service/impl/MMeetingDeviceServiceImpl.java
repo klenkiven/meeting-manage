@@ -6,6 +6,7 @@ import org.tyut4113.meeting.module.app.entity.MMeetingDeviceEntity;
 import org.tyut4113.meeting.module.app.mapper.MMeetingDeviceMapper;
 import org.tyut4113.meeting.module.app.service.MMeetingDeviceService;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,5 +34,10 @@ public class MMeetingDeviceServiceImpl extends ServiceImpl<MMeetingDeviceMapper,
             baseMapper.insert(mMeetingDeviceEntity);
         }
 
+    }
+
+    @Override
+    public List<Long> listDeviceIdByMeetingId(Long meetingId) {
+        return baseMapper.listDeviceIdByMeetingId(meetingId);
     }
 }

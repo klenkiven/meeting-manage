@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.tyut4113.meeting.common.utils.Result;
+import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
 
@@ -39,4 +40,12 @@ public class MMeetingController {
     /**
      * 获取会议的详细信息
      */
+    @GetMapping("/info/{meetingId}")
+    public Result<MMeetingInfoEntity> info(@PathVariable Long meetingId) {
+
+        MMeetingInfoEntity result = mMeetingInfoService.getMeetingByMeetingId(meetingId);
+
+        return Result.ok(result);
+    }
+
 }

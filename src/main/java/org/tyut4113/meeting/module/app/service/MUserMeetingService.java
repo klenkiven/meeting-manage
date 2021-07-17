@@ -21,5 +21,12 @@ public interface MUserMeetingService extends IService<MUserMeetingEntity> {
      * @param uidList 员工工号列表
      */
     void saveOrUpdate(Long meetingInfoId, List<Long> uidList);
+
+    /**
+     * 根据会议的ID获取用户的UID列表
+     * @param meetingId 会议ID
+     * @return 用户UID列表
+     */
+    List<Long> listUidByMeetingId(Long meetingId);
 }
 

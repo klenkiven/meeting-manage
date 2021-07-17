@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.tyut4113.meeting.module.app.mapper.MMeetingDeviceMapper">
+
+    <!-- 根据会议ID查询所有的设备ID -->
+    <select id="listDeviceIdByMeetingId" resultType="long">
+        select device_id from m_meeting_device where meeting_id = #{meetingId}
+    </select>
+
+    <!-- 根据会议ID批量信息 -->
+    <delete id="deleteBatch">
+        delete from m_meeting_device where meeting_id in
+        <foreach item="meetingId" collection="array" open="(" separator="," close=")">
+            #{meetingId}
+        </foreach>
+    </delete>
+
+</mapper>

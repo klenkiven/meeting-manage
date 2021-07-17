@@ -21,5 +21,12 @@ public interface MMeetingDeviceService extends IService<MMeetingDeviceEntity> {
      * @param deviceList 设备信息ID列表
      */
     void saveOrUpdate(Long meetingInfoId, List<Long> deviceList);
+
+    /**
+     * 根据会议的ID获取设备的ID列表
+     * @param meetingId 会议ID
+     * @return 设备ID列表
+     */
+    List<Long> listDeviceIdByMeetingId(Long meetingId);
 }
 
