@@ -1,15 +1,11 @@
 package org.tyut4113.meeting.module.app.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.tyut4113.meeting.common.utils.Result;
-import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
-import org.tyut4113.meeting.module.sys.service.MRoomService;
 
 import java.util.Map;
 
@@ -39,4 +35,8 @@ public class MMeetingController {
 
         return Result.ok(result);
     }
+
+    /**
+     * 获取会议的详细信息
+     */
 }

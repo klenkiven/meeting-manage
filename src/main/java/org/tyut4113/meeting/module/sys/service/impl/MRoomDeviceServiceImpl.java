@@ -23,6 +23,11 @@ public class MRoomDeviceServiceImpl extends ServiceImpl<MRoomDeviceMapper, MRoom
         condition.put("room_id", roomId);
         baseMapper.deleteByMap(condition);
 
+        // 如果为空或者列表对象为空，那么
+        if (deviceIdList == null || deviceIdList.size() == 0) {
+            return;
+        }
+
         // 保存新的关系
         for(Long deviceId: deviceIdList) {
             MRoomDeviceEntity rd = new MRoomDeviceEntity();

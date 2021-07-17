@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.tyut4113.meeting.module.sys.entity.MDeviceEntity;
 import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 
+import java.util.List;
+
 /**
  * 设备信息
  *
@@ -30,5 +32,12 @@ public interface MDeviceService extends IService<MDeviceEntity> {
      * @param deviceIds 设备ID
      */
     void deleteBatch(Long[] deviceIds);
+
+    /**
+     * 保存设备信息状态
+     *
+     * @param deviceIdList 设备ID列表
+     */
+    void setDeviceStatusByIds(List<Long> deviceIdList);
 }
 

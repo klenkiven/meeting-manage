@@ -14,6 +14,7 @@ import org.tyut4113.meeting.common.validation.group.UpdateGroup;
 import org.tyut4113.meeting.module.sys.entity.MDeviceEntity;
 import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MDeviceService;
+import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 
 import java.util.*;
 
@@ -28,19 +29,25 @@ import java.util.*;
 public class MDeviceController {
 
     private final MDeviceService mDeviceService;
+    private final MRoomDeviceService mRoomDeviceService;
 
     /**
      * 选择设备列表
      */
     @GetMapping("/select/{type}")
     @RequiresPermissions("meeting:device:select")
-    public Result<List<MDeviceEntity>> select(@PathVariable Integer type) {
+    public Result<List<MDeviceEntity>> select(@PathVariable Integer type,
+                                              @RequestParam("roomId") Long roomId) {
         QueryWrapper<MDeviceEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", type);
         if (type == 0) {
+            if (roomId != null) {
+                List<Long> longs = mRoomDeviceService.listDeviceIdByRoomId(roomId);
+                queryWrapper.in(longs.size() != 0, "id", longs);
+                queryWrapper.or(longs.size() != 0);
+            }
             queryWrapper.eq("status", Constant.DeviceStatus.UNALLOCATED.getValue());
         }
-
         List<MDeviceEntity> result = mDeviceService.list(queryWrapper);
 
         return Result.ok(result);

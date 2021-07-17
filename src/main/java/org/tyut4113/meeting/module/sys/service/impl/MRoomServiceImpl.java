@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.tyut4113.meeting.module.sys.entity.MRoomDeviceEntity;
 import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.mapper.MRoomMapper;
+import org.tyut4113.meeting.module.sys.service.MDeviceService;
 import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class MRoomServiceImpl extends ServiceImpl<MRoomMapper, MRoomEntity> implements MRoomService {
 
     public final MRoomDeviceService mRoomDeviceService;
+    public final MDeviceService mDeviceService;
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
@@ -28,13 +30,10 @@ public class MRoomServiceImpl extends ServiceImpl<MRoomMapper, MRoomEntity> impl
         List<Long> deviceIdList = room.getDeviceIdList();
         this.save(room);
 
-        // 如果为空或者列表对象为空，那么
-        if (deviceIdList == null || deviceIdList.size() == 0) {
-            return;
-        }
-
         // 保存关系
         mRoomDeviceService.saveOrUpdate(room.getId(), deviceIdList);
+        // 保存设备状态
+        mDeviceService.setDeviceStatusByIds(deviceIdList);
     }
 
     @Override
@@ -43,13 +42,10 @@ public class MRoomServiceImpl extends ServiceImpl<MRoomMapper, MRoomEntity> impl
         List<Long> deviceIdList = room.getDeviceIdList();
         this.updateById(room);
 
-        // 如果为空或者列表对象为空，那么
-        if (deviceIdList == null || deviceIdList.size() == 0) {
-            return;
-        }
-
         // 更新关系
         mRoomDeviceService.saveOrUpdate(room.getId(), deviceIdList);
+        // 保存设备状态
+        mDeviceService.setDeviceStatusByIds(deviceIdList);
     }
 
     @Override

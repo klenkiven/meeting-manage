@@ -1,5 +1,6 @@
 package org.tyut4113.meeting.module.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -24,7 +25,7 @@ public class MRoomDeviceEntity implements Serializable {
 	/**
 	 * 会议室ID
 	 */
-	@TableId
+	@TableId(type = IdType.INPUT)
 	private Long roomId;
 	/**
 	 * 设备ID

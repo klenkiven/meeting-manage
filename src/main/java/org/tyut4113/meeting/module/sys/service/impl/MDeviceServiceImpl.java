@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.tyut4113.meeting.common.utils.Constant;
 import org.tyut4113.meeting.module.app.entity.MMeetingDeviceEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingDeviceService;
 import org.tyut4113.meeting.module.app.service.impl.MMeetingDeviceServiceImpl;
@@ -51,6 +52,24 @@ public class MDeviceServiceImpl extends ServiceImpl<MDeviceMapper, MDeviceEntity
             query.eq("device_id", deviceId);
         }
         mMeetingDeviceService.remove(query);
+    }
+
+    @Override
+    public void setDeviceStatusByIds(List<Long> deviceIdList) {
+        if (deviceIdList == null || deviceIdList.size() == 0) {
+            return;
+        }
+        List<MDeviceEntity> mDeviceEntities = this.listByIds(deviceIdList);
+
+        for (MDeviceEntity m: mDeviceEntities) {
+            if (m.getType() == 0) {
+                m.setStatus(
+                        m.getStatus() == Constant.DeviceStatus.UNALLOCATED.getValue() ?
+                                Constant.DeviceStatus.ALLOCATED.getValue() :
+                                Constant.DeviceStatus.UNALLOCATED.getValue());
+            }
+            this.updateById(m);
+        }
     }
 
 }
