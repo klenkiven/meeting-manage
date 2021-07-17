@@ -58,4 +58,14 @@ public class MMeetingController {
         return Result.ok();
     }
 
+    /**
+     * 会议信息删除
+     */
+    @PostMapping("/delete")
+    public Result<?> delete(@RequestBody Long[] meetingIds) {
+        mMeetingInfoService.deleteBatch(meetingIds);
+
+        return Result.ok();
+    }
+
 }

@@ -56,5 +56,11 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
      * @return 会议详细信息
      */
     MMeetingInfoEntity getMeetingByMeetingId(Long meetingId);
+
+    /**
+     * 根据会议ID数组批量删除会议信息
+     * @param meetingIds 会议ID列表
+     */
+    void deleteBatch(Long[] meetingIds);
 }
 

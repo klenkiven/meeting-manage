@@ -28,5 +28,11 @@ public interface MUserMeetingService extends IService<MUserMeetingEntity> {
      * @return 用户UID列表
      */
     List<Long> listUidByMeetingId(Long meetingId);
+
+    /**
+     * 根据会议ID数组批量删除会议用户关系
+     * @param meetingIds 会议ID列表
+     */
+    void deleteBatch(Long[] meetingIds);
 }
 

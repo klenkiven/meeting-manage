@@ -19,6 +19,7 @@ import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -139,6 +140,14 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
         result.setDeviceList(deviceIdList);
 
         return result;
+    }
+
+    @Override
+    public void deleteBatch(Long[] meetingIds) {
+        this.removeByIds(Arrays.asList(meetingIds));
+
+        mUserMeetingService.deleteBatch(meetingIds);
+        mMeetingDeviceService.deleteBatch(meetingIds);
     }
 
     /**

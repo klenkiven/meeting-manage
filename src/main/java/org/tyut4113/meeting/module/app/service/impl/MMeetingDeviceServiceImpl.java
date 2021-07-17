@@ -40,4 +40,9 @@ public class MMeetingDeviceServiceImpl extends ServiceImpl<MMeetingDeviceMapper,
     public List<Long> listDeviceIdByMeetingId(Long meetingId) {
         return baseMapper.listDeviceIdByMeetingId(meetingId);
     }
+
+    @Override
+    public void deleteBatch(Long[] meetingIds) {
+        baseMapper.deleteBatch(meetingIds);
+    }
 }

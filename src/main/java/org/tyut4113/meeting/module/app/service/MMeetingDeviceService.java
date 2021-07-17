@@ -28,5 +28,11 @@ public interface MMeetingDeviceService extends IService<MMeetingDeviceEntity> {
      * @return 设备ID列表
      */
     List<Long> listDeviceIdByMeetingId(Long meetingId);
+
+    /**
+     * 根据会议ID数组批量删除会议设备关系
+     * @param meetingIds 会议ID列表
+     */
+    void deleteBatch(Long[] meetingIds);
 }
 

@@ -39,4 +39,9 @@ public class MUserMeetingServiceImpl extends ServiceImpl<MUserMeetingMapper, MUs
     public List<Long> listUidByMeetingId(Long meetingId) {
         return baseMapper.listUidByMeetingId(meetingId);
     }
+
+    @Override
+    public void deleteBatch(Long[] meetingIds) {
+        baseMapper.deleteBatch(meetingIds);
+    }
 }
