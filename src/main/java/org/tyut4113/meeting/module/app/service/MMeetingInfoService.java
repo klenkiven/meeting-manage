@@ -1,8 +1,10 @@
 package org.tyut4113.meeting.module.app.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
+import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
 
 import java.util.Date;
 import java.util.List;
@@ -30,5 +32,15 @@ public interface MMeetingInfoService extends IService<MMeetingInfoEntity> {
      * @return 碰撞会议的会议室信息
      */
     List<Long> listAllCollusionMeeting(Date meetingStartTime, Date meetingEndTime);
+
+    /**
+     * 根据会议名称进行模糊分页查询
+     *
+     * @param current 当前页
+     * @param limit 页限制
+     * @param name 模糊名
+     * @return 数据传输页
+     */
+    Page<MMeetingInfoVo> page(Integer current, Integer limit, String name);
 }
 

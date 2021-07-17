@@ -1,8 +1,11 @@
 package org.tyut4113.meeting.module.app.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tyut4113.meeting.common.exception.GeneralException;
@@ -11,8 +14,11 @@ import org.tyut4113.meeting.module.app.mapper.MMeetingInfoMapper;
 import org.tyut4113.meeting.module.app.service.MMeetingDeviceService;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 import org.tyut4113.meeting.module.app.service.MUserMeetingService;
+import org.tyut4113.meeting.module.app.vo.MMeetingInfoVo;
+import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MRoomService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,6 +76,31 @@ public class MMeetingInfoServiceImpl extends ServiceImpl<MMeetingInfoMapper, MMe
         });
         
         return roomIdList;
+    }
+
+    @Override
+    public Page<MMeetingInfoVo> page(Integer current, Integer limit, String name) {
+        Page<MMeetingInfoEntity> page = new Page<>(current, limit);
+        QueryWrapper<MMeetingInfoEntity> query = new QueryWrapper<>();
+        query.like(StringUtils.isBlank(name), "name", "%" + name + "%");
+        Page<MMeetingInfoEntity> meetingInfoEntityPage = this.page(page, query);
+
+        List<MMeetingInfoVo> mMeetingInfoVoRecords = new ArrayList<>();
+        for(MMeetingInfoEntity mm: meetingInfoEntityPage.getRecords()) {
+            MMeetingInfoVo mmv = new MMeetingInfoVo();
+            BeanUtils.copyProperties(mm, mmv);
+
+            MRoomEntity room = mRoomService.getById(mm.getRoomId());
+            mmv.setRoomName(room.getName());
+
+            mMeetingInfoVoRecords.add(mmv);
+        }
+
+        Page<MMeetingInfoVo> result = new Page<>();
+        result.setRecords(mMeetingInfoVoRecords);
+        result.setTotal(meetingInfoEntityPage.getTotal());
+
+        return result;
     }
 
     /**
