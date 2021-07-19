@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.tyut4113</groupId>
     <artifactId>meeting-manage</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>meeting-manage</name>
     <description>会议管理系统</description>
 
