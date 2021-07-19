@@ -37,6 +37,14 @@ public class MDeviceServiceImpl extends ServiceImpl<MDeviceMapper, MDeviceEntity
     @Transactional(rollbackFor = {Exception.class})
     public void updateDevice(MDeviceEntity device) {
         this.updateById(device);
+
+        // 在固定设备设备中设置未分配，可以取消房间和该设备的关系
+        if (device.getType() == 0 &&
+                device.getStatus() == Constant.DeviceStatus.UNALLOCATED.getValue()) {
+            QueryWrapper<MRoomDeviceEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("device_id", device.getId());
+            mRoomDeviceService.remove(queryWrapper);
+        }
     }
 
     @Override

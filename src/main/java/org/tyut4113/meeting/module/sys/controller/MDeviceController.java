@@ -12,7 +12,6 @@ import org.tyut4113.meeting.common.validation.ValidatorUtils;
 import org.tyut4113.meeting.common.validation.group.AddGroup;
 import org.tyut4113.meeting.common.validation.group.UpdateGroup;
 import org.tyut4113.meeting.module.sys.entity.MDeviceEntity;
-import org.tyut4113.meeting.module.sys.entity.MRoomEntity;
 import org.tyut4113.meeting.module.sys.service.MDeviceService;
 import org.tyut4113.meeting.module.sys.service.MRoomDeviceService;
 
