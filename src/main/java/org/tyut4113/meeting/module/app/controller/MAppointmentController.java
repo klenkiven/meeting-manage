@@ -6,6 +6,7 @@ import org.tyut4113.meeting.common.utils.Result;
 import org.tyut4113.meeting.module.app.entity.MMeetingInfoEntity;
 import org.tyut4113.meeting.module.app.service.MMeetingInfoService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +43,13 @@ public class MAppointmentController extends AbstractController {
     public Result<List<Long>> except(@RequestBody Map<String, Date> params) {
         Date startTime = params.get("startTime");
         Date endTime = params.get("endTime");
-        mMeetingInfoService.listAllCollusionMeeting(startTime, endTime);
+        List<Long> exceptList = new ArrayList<>();
+        if (startTime == null || endTime == null) {
+            return Result.fail(exceptList).message("请先填写时间");
+        }
+        exceptList = mMeetingInfoService.listAllCollusionMeeting(startTime, endTime);
 
-        return Result.ok();
+        return Result.ok(exceptList);
     }
 
 }
